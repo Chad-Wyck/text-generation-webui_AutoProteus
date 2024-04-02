@@ -86,16 +86,10 @@ def generate_chat_prompt(user_input, state, **kwargs):
     if state['mode'] != 'instruct':
         chat_template_str = replace_character_names(chat_template_str, state['name1'], state['name2'])
 
-    instruction_template = jinja_env.from_string(state['instruction_template_str'])
-    instruct_renderer = partial(instruction_template.render, add_generation_prompt=False)
     chat_template = jinja_env.from_string(chat_template_str)
-    chat_renderer = partial(
-        chat_template.render,
-        add_generation_prompt=False,
-        name1=state['name1'],
-        name2=state['name2'],
-        user_bio=replace_character_names(state['user_bio'], state['name1'], state['name2']),
-    )
+    instruction_template = jinja_env.from_string(state['instruction_template_str'])
+    chat_renderer = partial(chat_template.render, add_generation_prompt=False, name1=state['name1'], name2=state['name2'])
+    instruct_renderer = partial(instruction_template.render, add_generation_prompt=False)
 
     messages = []
 
@@ -105,7 +99,7 @@ def generate_chat_prompt(user_input, state, **kwargs):
             messages.append({"role": "system", "content": state['custom_system_message']})
     else:
         renderer = chat_renderer
-        if state['context'].strip() != '' or state['user_bio'].strip() != '':
+        if state['context'].strip() != '':
             context = replace_character_names(state['context'], state['name1'], state['name2'])
             messages.append({"role": "system", "content": context})
 
@@ -146,7 +140,6 @@ def generate_chat_prompt(user_input, state, **kwargs):
             command = state['chat-instruct_command']
             command = command.replace('<|character|>', state['name2'] if not impersonate else state['name1'])
             command = command.replace('<|prompt|>', prompt)
-            command = replace_character_names(command, state['name1'], state['name2'])
 
             if _continue:
                 prefix = get_generation_prompt(renderer, impersonate=impersonate, strip_trailing_spaces=False)[0]
@@ -157,18 +150,16 @@ def generate_chat_prompt(user_input, state, **kwargs):
                     prefix = apply_extensions('bot_prefix', prefix, state)
 
             outer_messages.append({"role": "user", "content": command})
-            outer_messages.append({"role": "assistant", "content": prefix})
+            outer_messages.append({"role": "autoproteus", "content": prefix})
 
             prompt = instruction_template.render(messages=outer_messages)
             suffix = get_generation_prompt(instruct_renderer, impersonate=False)[1]
-            if len(suffix) > 0:
-                prompt = prompt[:-len(suffix)]
+            prompt = prompt[:-len(suffix)]
 
         else:
             if _continue:
                 suffix = get_generation_prompt(renderer, impersonate=impersonate)[1]
-                if len(suffix) > 0:
-                    prompt = prompt[:-len(suffix)]
+                prompt = prompt[:-len(suffix)]
             else:
                 prefix = get_generation_prompt(renderer, impersonate=impersonate)[0]
                 if state['mode'] == 'chat' and not impersonate:

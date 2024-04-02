@@ -6,6 +6,8 @@ main_parent.style = "padding: 0; margin: 0";
 main_parent.parentNode.style = "gap: 0";
 main_parent.parentNode.parentNode.style = "padding: 0";
 
+
+
 document.querySelector(".header_bar").addEventListener("click", function(event) {
   if (event.target.tagName === "BUTTON") {
     const buttonText = event.target.textContent.trim();
@@ -34,6 +36,20 @@ document.querySelector(".header_bar").addEventListener("click", function(event) 
   }
 });
 
+
+
+Generate_plus_toggle = false;
+
+async function Generate_Plus_Loop(){
+  if (Generate_plus_toggle)
+    document.getElementById("Generate").click();
+    setTimeout(function(){
+      Generate_Plus_Loop();
+    }, 500);
+  return
+};
+
+
 //------------------------------------------------
 // Keyboard shortcuts
 //------------------------------------------------
@@ -42,6 +58,7 @@ document.addEventListener("keydown", function(event) {
 
   // Stop generation on Esc pressed
   if (event.key === "Escape") {
+    Generate_plus_toggle = false;
     // Find the element with id 'stop' and click it
     var stopButton = document.getElementById("stop");
     if (stopButton) {
@@ -60,6 +77,14 @@ document.addEventListener("keydown", function(event) {
       var arr = document.getElementById("chat-input").childNodes[2].childNodes;
       arr[arr.length - 1].focus();
     }
+  }
+
+
+  // Continious Generation Test
+  else if (event.shiftKey && event.key === "Enter"){
+    event.preventDefault();
+    Generate_plus_toggle = true;
+    Generate_Plus_Loop();
   }
 
   // Regenerate on Ctrl + Enter

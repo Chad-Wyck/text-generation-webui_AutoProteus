@@ -190,5 +190,3 @@
   instruction_template: 'ChatML'
 .*synthia:
   instruction_template: 'Synthia'
-.*(hercules|hyperion):
-  instruction_template: 'ChatML'
