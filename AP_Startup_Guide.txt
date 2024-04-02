@@ -1,4 +1,16 @@
-1. Install Docker Desktop and Ensure It is Running
-2. Run AP_DockerUbuntu_boot.bat once to initialize the docker container for the model to interact with
-3. Run AP.bat
-4. Shift + Enter : Continuious Generation > Esc To Cancel (not "Stop", wip)
+1. Install Docker Desktop and Ensure It is Running ( https://docs.docker.com/engine/install/ ) 
+	
+	* Note potential security false positives for step 2 and 3.
+2. Run AP_DockerUbuntu_boot.bat once to initialize the docker container for the model to interact with, use docker desktop to start the container from then on, or delete it and run AP_DockerUbuntu_boot.bat again to initialize a fresh docker container.
+
+	**
+3. Run AP.bat, this will launch oobabooga with launch --flags set for AutoProteus
+
+4. [Shift + Enter] : Continuious Generation -> [Shift] or [Control] To Cancel Autogeneration.
+
+
+* If windows gives you security warnings running the .bats, you can ignore this warning if you click for more information, alternatively you can open them with any text editor and then copy and paste the commands into a cmd.exe that is in the root working directory, (type cmd.exe into the address bar in your folder explorer, "...text-generation-webui_AutoProteus/cmd.exe" and press enter, then you can run the copy pasted commands.
+
+** You may need to Start_Windows.bat once and download the NousResearch/Hermes-2-Pro-Mistral-7B model and once it's complete, repeat step 3.
+
+

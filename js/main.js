@@ -56,9 +56,17 @@ async function Generate_Plus_Loop(){
 let previousTabId = "chat-tab-button";
 document.addEventListener("keydown", function(event) {
 
+
+  // Stop AutoGeneration if ~ (`) is pressed
+  if (event.ctrlKey || event.shiftKey)
+    Generate_plus_toggle = false;
+
+
+
   // Stop generation on Esc pressed
   if (event.key === "Escape") {
     Generate_plus_toggle = false;
+
     // Find the element with id 'stop' and click it
     var stopButton = document.getElementById("stop");
     if (stopButton) {

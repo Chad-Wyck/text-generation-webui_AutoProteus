@@ -445,7 +445,7 @@ def apply_stopping_strings(reply, all_stop_strings):
                 snippet_response = extract_and_save_snippets_to_docker(reply)
                 wsl_response = execute_docker_command(command)
                 
-                reply = reply + f'<|im_end|> \n___\n <|im_start|>terminal \n<tool_response>\n {wsl_response}\n{snippet_response}\n</tool_response><|im_end|> \n___\n'
+                reply = reply + f'<|im_end|>\n<|im_start|>system \n<tool_response>\n {wsl_response}\n{snippet_response}\n</tool_response><|im_end|>\n'
 
 
             else:

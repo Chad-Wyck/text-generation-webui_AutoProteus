@@ -149,8 +149,9 @@ def generate_chat_prompt(user_input, state, **kwargs):
                 if not impersonate:
                     prefix = apply_extensions('bot_prefix', prefix, state)
 
-            outer_messages.append({"role": "user", "content": command})
-            outer_messages.append({"role": "autoproteus", "content": prefix})
+            outer_messages.append({"role": "", "content": command})
+            outer_messages.append({"role": "", "content": prefix})
+
 
             prompt = instruction_template.render(messages=outer_messages)
             suffix = get_generation_prompt(instruct_renderer, impersonate=False)[1]
