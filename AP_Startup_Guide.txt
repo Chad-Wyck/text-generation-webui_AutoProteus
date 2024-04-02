@@ -1,0 +1,4 @@
+1. Install Docker Desktop and Ensure It is Running
+2. Run AP_DockerUbuntu_boot.bat once to initialize the docker container for the model to interact with
+3. Run AP.bat
+4. Shift + Enter : Continuious Generation > Esc To Cancel (not "Stop", wip)
