@@ -155,6 +155,9 @@ def generate_chat_prompt(user_input, state, **kwargs):
 
             prompt = instruction_template.render(messages=outer_messages)
             suffix = get_generation_prompt(instruct_renderer, impersonate=False)[1]
+
+            
+            
             prompt = prompt[:-len(suffix)]
 
         else:
@@ -168,7 +171,12 @@ def generate_chat_prompt(user_input, state, **kwargs):
 
                 prompt += prefix
 
+
+        # TEST - Post prompt -> system prompt injection
+        # prompt += state['name2'] if not impersonate else state['name1'] 
+
         prompt = remove_extra_bos(prompt)
+
         return prompt
 
     prompt = make_prompt(messages)

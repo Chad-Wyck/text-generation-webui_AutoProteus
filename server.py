@@ -71,6 +71,10 @@ signal.signal(signal.SIGINT, signal_handler)
 
 def create_interface():
 
+    # TEST 
+    os.system('start http://127.0.0.1:7860')
+
+
     title = 'Text generation web UI'
 
     # Password authentication
