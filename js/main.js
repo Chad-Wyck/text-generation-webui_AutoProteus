@@ -40,14 +40,15 @@ document.querySelector(".header_bar").addEventListener("click", function(event) 
 
 Generate_plus_toggle = false;
 
-async function Generate_Plus_Loop(){
+async function Generate_Cont_Loop(){
   if (Generate_plus_toggle)
     document.getElementById("Generate").click();
-    setTimeout(function(){
-      Generate_Plus_Loop();
-    }, 500);
-  return
+  setTimeout(function(){
+    Generate_Cont_Loop();
+  }, 500);
 };
+
+Generate_Cont_Loop()
 
 
 //------------------------------------------------
@@ -58,7 +59,7 @@ document.addEventListener("keydown", function(event) {
 
 
   // Stop AutoGeneration if ~ (`) is pressed
-  if (event.ctrlKey || event.shiftKey)
+  if (event.ctrlKey || event.shiftKey || event.key === "Backspace")
     Generate_plus_toggle = false;
 
 
@@ -92,7 +93,6 @@ document.addEventListener("keydown", function(event) {
   else if (event.shiftKey && event.key === "Enter"){
     event.preventDefault();
     Generate_plus_toggle = true;
-    Generate_Plus_Loop();
   }
 
   // Regenerate on Ctrl + Enter
