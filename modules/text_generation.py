@@ -132,15 +132,21 @@ def extract_and_save_snippets_to_docker(text, container_name='ubuntu', state_fil
     return output
 
    
-def execute_docker_command(commands, container_name='ubuntu'):
-    import subprocess
+def execute_docker_command(commands, container_name='ubuntu', state_file='/temp/docker_current_dir.txt'):
+    # Ensure the state file exists and has a default directory
+    os.makedirs(os.path.dirname(state_file), exist_ok=True)
+    if not os.path.isfile(state_file):
+        with open(state_file, 'w') as file:
+            file.write('/mnt/data')  # Default directory inside the container
 
-    # Initialize the output dictionary
+    # Read the current directory from the state file
+    with open(state_file, 'r') as file:
+        current_dir = file.read().strip() or '/mnt/data'
+
     aggregated_stdout = ''
     aggregated_stderr = ''
     final_exit_code = 0
     
-    # Split the commands by '&&', handling quoted strings
     command_list = []
     command = ''
     in_quote = False
@@ -150,34 +156,35 @@ def execute_docker_command(commands, container_name='ubuntu'):
             in_quote = not in_quote
             quote_char = char if in_quote else ''
         elif char == '&' and not in_quote:
-            if commands[commands.index(char) + 1] == '&':
+            if command and commands[commands.index(char) + 1] == '&':
                 command_list.append(command.strip())
                 command = ''
                 continue
         command += char
-    command_list.append(command.strip())  # Add the last command
+    command_list.append(command.strip())
     
-    shell = '/bin/sh'  # Use a fixed shell for command execution
+    shell = '/bin/sh'
     
     for cmd in command_list:
         if not cmd:
             continue
 
+        if cmd.startswith('&'):
+            cmd = cmd[1:].strip()
+
         full_command = f'{cmd}'
         result = subprocess.run(['docker', 'exec', container_name, shell, '-c', full_command],
                                 capture_output=True, text=True, check=False)
 
-        # Process and clean up the stderr to remove the unwanted prefix
-        cleaned_stderr = '\n'.join(line.split(': ', 1)[1] if ': ' in line else line 
-                                   for line in result.stderr.split('\n'))
+        cleaned_stderr = '\\n'.join(line.split(': ', 1)[1] if ': ' in line else line 
+                                    for line in result.stderr.split('\\n'))
 
         aggregated_stdout += result.stdout
-        aggregated_stderr += cleaned_stderr
+        aggregated_stderr += result.stderr
         final_exit_code = result.returncode
     
-    # Add a terminal-like prompt at the end
-    prompt = "auto_proteus@DESKTOP-GQBK5SE:~$"
-    output = f"{aggregated_stdout}\n{aggregated_stderr}\n"
+    #prompt = "auto_proteus@DESKTOP-GQBK5SE:~$"
+    output = f"{aggregated_stdout}\\n{aggregated_stderr}\n"
 
     return output
 
@@ -423,7 +430,7 @@ def apply_stopping_strings(reply, all_stop_strings):
                 snippet_response = extract_and_save_snippets_to_docker(reply)
                 wsl_response = execute_docker_command(command)
                 
-                reply = reply + f'<|im_end|>\n<|im_start|>system \n<tool_response>\n {wsl_response} \n</tool_response><|im_end|>\n'
+                reply = reply + f'<|im_end|>\n<|im_start|>tool \n<tool_response>\n {wsl_response} \n</tool_response><|im_end|>\n'
 
 
             else:
