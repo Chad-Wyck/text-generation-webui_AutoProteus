@@ -165,6 +165,7 @@ def execute_docker_command(commands, container_name='ubuntu', state_file='/temp/
     
     shell = '/bin/sh'
     
+    previous_percent_line = ""
     for cmd in command_list:
         if not cmd:
             continue
@@ -172,19 +173,41 @@ def execute_docker_command(commands, container_name='ubuntu', state_file='/temp/
         if cmd.startswith('&'):
             cmd = cmd[1:].strip()
 
-        full_command = f'{cmd}'
+        # Handle 'cd' command and change of directory
+        if cmd.startswith('cd '):
+            new_dir = cmd.split(' ', 1)[1]
+            # Check if the new directory exists inside the docker container
+            check_cmd = f'if [ -d "{new_dir}" ]; then echo "exists"; else echo "not exists"; fi'
+            dir_exists_result = subprocess.run(['docker', 'exec', container_name, shell, '-c', check_cmd],
+                                               capture_output=True, text=True, check=False)
+            if dir_exists_result.stdout.strip() == 'exists':
+                current_dir = new_dir  # Update current directory
+                # Update the state file with the new directory
+                with open(state_file, 'w') as file:
+                    file.write(current_dir)
+                continue
+            else:
+                aggregated_stderr += f"cd: {new_dir}: No such file or directory\n"
+                final_exit_code = 1
+                continue
+
+        full_command = f'cd {current_dir} && {cmd}'
         result = subprocess.run(['docker', 'exec', container_name, shell, '-c', full_command],
                                 capture_output=True, text=True, check=False)
 
-        cleaned_stderr = '\\n'.join(line.split(': ', 1)[1] if ': ' in line else line 
-                                    for line in result.stderr.split('\\n'))
-
+        for line in result.stderr.split('\n'):
+            if '...' in line and '%' in line:
+                percent_line = line.split('...')[0] + '...'
+                if percent_line != previous_percent_line:
+                    previous_percent_line = percent_line
+                    aggregated_stderr += line + '\n'
+            else:
+                aggregated_stderr += line + '\n'
+                
         aggregated_stdout += result.stdout
-        aggregated_stderr += result.stderr
         final_exit_code = result.returncode
     
-    #prompt = "auto_proteus@DESKTOP-GQBK5SE:~$"
-    output = f"{aggregated_stdout}\\n{aggregated_stderr}\n"
+    output = f"{aggregated_stdout}\n{aggregated_stderr}\n"
 
     return output
 
@@ -430,7 +453,7 @@ def apply_stopping_strings(reply, all_stop_strings):
                 snippet_response = extract_and_save_snippets_to_docker(reply)
                 wsl_response = execute_docker_command(command)
                 
-                reply = reply + f'<|im_end|>\n<|im_start|>tool \n<tool_response>\n {wsl_response} \n</tool_response><|im_end|>\n'
+                reply = reply + f'<|im_end|><|im_start|>tool\n<tool_response>\n{{{wsl_response}}}\n</tool_response><|im_end|>'
 
 
             else:
@@ -465,9 +488,9 @@ def get_reply_from_output_ids(output_ids, state=None, starting_from=0):
         if isinstance(first_token, (bytes,)):
             first_token = first_token.decode('utf8')
 
-        
-        if first_token.startswith('▁'):
-            reply = ' ' + reply
+        if first_token != None:
+            if first_token.startswith('▁'):
+                reply = ' ' + reply
 
     return reply
 
