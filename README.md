@@ -1,5 +1,19 @@
-# Text generation web UI
+# AutoProteus
+The end goal of this repository is to ultimately strip down oobabooga to function purely with a non-trivial custom language model, with the stripping being done purely by the models understanding of its own launch environment (with access in the end)
 
+##Phase 0: BabyProteus (System Prompt -> Custom Model)
+ - Test different system prompts and virtal (and non virtual) environment interactions
+ - Gather self submitted chat logs and long chain self-console interactions 
+ - 
+
+##Phase 1: AutoProteus ( LORA -> Custom Model )
+ - Training and implementation of a model trained purely on functional data (% of trivial for coherence?)
+ - 
+
+##Phase 2: Groundnet  ( https://arxiv.org/abs/2403.10853 )
+ - TBD
+
+# Text generation web UI
 A Gradio web UI for Large Language Models.
 
 Its goal is to become the [AUTOMATIC1111/stable-diffusion-webui](https://github.com/AUTOMATIC1111/stable-diffusion-webui) of text generation.
