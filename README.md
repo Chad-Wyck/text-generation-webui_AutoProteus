@@ -1,17 +1,24 @@
 # AutoProteus
-The end goal of this repository is to ultimately strip down oobabooga to function purely with a non-trivial custom language model, with the stripping being done purely by the models understanding of its own launch environment (with access in the end)
 
-##Phase 0: BabyProteus (System Prompt -> Custom Model)
- - Test different system prompts and virtal (and non virtual) environment interactions
- - Gather self submitted chat logs and long chain self-console interactions 
- - 
+The end goal of this repository is to ultimately strip down the oobabooga webUI to function purely with a non-trivial custom language model, with the stripping being done purely so that the model's understanding of its own launch environment (with access in the end) will be less obtuse to it's core functionality.
 
-##Phase 1: AutoProteus ( LORA -> Custom Model )
- - Training and implementation of a model trained purely on functional data (% of trivial for coherence?)
- - 
+## Phase 0: BabyProteus (System Prompt -> Custom LoRA)
+- Test different system prompts and virtual (and non-virtual) environment interactions.
+- Gather self-submitted chat logs and long chain self-console interactions.
+- Analyze collected data to refine system prompts and improve model responses.
+- Test different base small language models (under 10B parameters).
 
-##Phase 2: Groundnet  ( https://arxiv.org/abs/2403.10853 )
- - TBD
+## Phase 1: AutoProteus (LoRA -> Custom Model)
+- Train and implement a model trained purely on functional data.
+- Measure and ensure coherence by evaluating the percentage of trivial versus non-trivial data.
+- Incorporate minimal trivial data after functional data to address potential relational frame theory problems.
+- Continuously refine the model based on functional data performance.
+
+## Phase 2: Groundnet
+- Explore the implementation of Groundnet concepts within AutoProteus.
+- Define and execute further steps based on research outcomes.
+
+
 
 # Text generation web UI
 A Gradio web UI for Large Language Models.
