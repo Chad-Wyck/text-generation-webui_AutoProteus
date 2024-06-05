@@ -437,7 +437,7 @@ def stop_everything_event():
 def apply_stopping_strings(reply, all_stop_strings):
     stop_found = False
 
-    tool_call_prefix = '<tool_call>'
+    tool_call_prefix = '<💻>'
     
     for string in all_stop_strings:
         idx = reply.find(string)
