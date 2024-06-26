@@ -10,7 +10,7 @@ max_new_tokens: 4096
 max_new_tokens_min: 1
 max_new_tokens_max: 8192
 negative_prompt: ''
-seed: -1
+seed: 42
 truncation_length: 8192
 truncation_length_min: 0
 truncation_length_max: 200000
