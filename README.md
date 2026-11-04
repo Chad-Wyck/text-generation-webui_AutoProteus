@@ -1,3 +1,6 @@
+#This repo is an old version
+[Current Version](https://github.com/Chad-Wyck/AutoProteus)
+
 # AutoProteus
 
 The end goal of this repository is to ultimately strip down the oobabooga webUI to function purely with a non-trivial custom language model, with the stripping being done purely so that the model's understanding of its own launch environment (with access in the end) will be less obtuse to it's core functionality.
